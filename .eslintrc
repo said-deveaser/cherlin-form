@@ -25,6 +25,7 @@
   },
   "plugins": ["@typescript-eslint"],
   "rules": {
+    "max-len": ["warn", { "code": 300 }],
     "prettier/prettier": 1,
     "space-before-function-paren": 0,
     "react/prop-types": 0,

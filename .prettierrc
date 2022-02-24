@@ -6,6 +6,6 @@
   "bracketSpacing": false,
   "jsxBracketSameLine": false,
   "arrowParens": "avoid",
-  "endOfLine": "crlf",
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "printWidth": 300
 }
