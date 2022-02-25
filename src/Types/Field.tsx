@@ -12,7 +12,6 @@ type FieldChildrenProps<Value> = {
   }
 }
 export type FieldProps<Value> = {
-  value: Value | null
   validate?: (value: Value | null, formValues: any) => any
   children: FC<FieldChildrenProps<Value>>
   name: string

@@ -1,6 +1,7 @@
 import React, {FC, useEffect, useMemo, useState} from 'react'
 import {FieldProps} from '../Types/Field'
 import {RegisterChangeFunction, RegisterValidateFunction} from '../Types/Form'
+import {objectGet} from '../core/Helpers'
 
 type MakeFieldParams<FormValues> = {
   changeFormField: (fieldName: string, value: any) => void
@@ -10,12 +11,13 @@ type MakeFieldParams<FormValues> = {
 }
 const makeField =
   <FormValues extends any>({changeFormField, formValues, registerChangeFunction, registerValidateFunction}: MakeFieldParams<FormValues>) =>
-  <Value extends any>(props: FieldProps<Value>) => {
-    const {value, validate, children, name} = props
+  <Value extends any>(props: FieldProps<Value>): JSX.Element => {
+    const {validate, children, name} = props
 
     const [_error, _setError] = useState<any>(undefined)
     const [_touched, _setTouched] = useState(false)
-    const [_value, _setValue] = useState<Value | null>(value)
+    // @ts-ignore
+    const [_value, _setValue] = useState<Value | null>(objectGet({path: name, obj: formValues}) || null)
 
     const _validate = (value: Value | null) => {
       if (!_touched) {
@@ -47,7 +49,7 @@ const makeField =
     }, [])
 
     const Children = children
-    const childrenComponent = useMemo(
+    const childComponent = useMemo(
       () => (
         <Children
           meta={{
@@ -61,9 +63,22 @@ const makeField =
           }}
         />
       ),
-      [_value],
+      [_value, _touched, _error],
     )
 
-    return <>{childrenComponent}</>
+    // return <div>{childComponent}</div>
+    return (
+      <Children
+        meta={{
+          error: _error,
+          touched: _touched,
+          metaDependentError: (_touched && _error) || undefined,
+        }}
+        field={{
+          onValueChange: _changeValue,
+          value: _value,
+        }}
+      />
+    )
   }
 export default makeField

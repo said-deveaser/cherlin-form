@@ -7,7 +7,7 @@ import {FieldProps} from '../Types/Field'
 class Form<FormData extends any> {
   private _formValues: any = {}
   private _onSubmit: OnSubmit<FormData>
-  public Field: <Value extends any>(props: FieldProps<Value>) => ReactNode
+  public Field: <Value extends any>(props: FieldProps<Value>) => JSX.Element
   constructor(params: FormConstructorParams<FormData>) {
     if (params.initialData) {
       this._initializeForm(params.initialData)
@@ -20,6 +20,15 @@ class Form<FormData extends any> {
       registerValidateFunction: this._registerValidateFunction.bind(this),
     })
   }
+
+  // public getDataToMakeField = () => {
+  //   return {
+  //     formValues: this._formValues,
+  //     changeFormField: this._changeFormValue.bind(this),
+  //     registerChangeFunction: this._registerChangeFunction.bind(this),
+  //     registerValidateFunction: this._registerValidateFunction.bind(this),
+  //   }
+  // }
 
   private _initializeForm = (initialValue: FormData) => {
     this._formValues = initialValue
