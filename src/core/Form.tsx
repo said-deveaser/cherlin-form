@@ -1,4 +1,4 @@
-import {AnyObject, FormConstructorParams, OnSubmit, RegisterChangeFunction, RegisterValidateFunction} from '../Types/Form'
+import {AnyObject, FormConstructorParams, OnSubmit, OnSubmitFailedFunction, RegisterChangeFunction, RegisterValidateFunction} from '../Types/Form'
 import {objectSet} from './Helpers'
 import {ReactNode} from 'react'
 import makeField from '../components/Field'
@@ -7,12 +7,22 @@ import {FieldProps} from '../Types/Field'
 class Form<FormData extends any> {
   private _formValues: any = {}
   private _onSubmit: OnSubmit<FormData>
-  public Field: <Value extends any>(props: FieldProps<Value>) => JSX.Element
+  private _debug: boolean = false
+  private _onSubmitFailed: OnSubmitFailedFunction<FormData> | undefined = undefined
+
+  public Field: <Value extends any>(props: FieldProps<Value, FormData>) => JSX.Element
+
   constructor(params: FormConstructorParams<FormData>) {
     if (params.initialData) {
       this._initializeForm(params.initialData)
     }
     this._onSubmit = params.onSubmit
+    if (params.debug) {
+      this._debug = params.debug
+    }
+    if (params.onSubmitFailed) {
+      this._onSubmitFailed = params.onSubmitFailed
+    }
     this.Field = makeField({
       formValues: this._formValues,
       changeFormField: this._changeFormValue.bind(this),
@@ -43,24 +53,33 @@ class Form<FormData extends any> {
       obj: this._formValues,
       path: fieldName,
     })
+    if (this._debug) {
+      console.log('FormValues', this._formValues)
+    }
   }
 
   /*
    * submit сабмитит форму
    *  */
   public submit() {
-    let hasError = false
+    let firstError: any = false
     Object.values(this._registeredValidateFunction).forEach(filedValidateFunctionsArray => {
       filedValidateFunctionsArray.forEach(validateFunc => {
-        if (!hasError) {
-          if (!(validateFunc === null || validateFunc === undefined)) {
-            hasError = true
+        if (!firstError) {
+          const potentialError = validateFunc()
+          if (!(potentialError === null || potentialError === undefined)) {
+            firstError = potentialError
           }
         }
       })
     })
-    if (!hasError) {
+    if (this._debug) {
+      console.log('hasError', firstError)
+    }
+    if (!firstError) {
       this._onSubmit(this._formValues)
+    } else if (this._onSubmitFailed) {
+      this._onSubmitFailed(this._formValues, firstError)
     }
   }
 

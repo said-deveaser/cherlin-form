@@ -1,11 +1,8 @@
 import React, {useMemo} from 'react'
 import Form from './Form'
-import {OnSubmit} from '../Types/Form'
+import {FormConstructorParams, OnSubmit} from '../Types/Form'
 
-type UseCreateFormParams<FormValue> = {
-  initialData: FormValue
-  onSubmit: OnSubmit<FormValue>
-}
+type UseCreateFormParams<FormValue> = FormConstructorParams<FormValue>
 export const useCreateForm = <FormValue extends any>(params: UseCreateFormParams<FormValue>) => {
   const form = useMemo(
     () =>
@@ -17,7 +14,7 @@ export const useCreateForm = <FormValue extends any>(params: UseCreateFormParams
   )
   return {
     Field: form.Field,
-    FieldTest: () => <div>123</div>,
+    // FieldTest: () => <div>123</div>,
     submit: form.submit.bind(form),
   }
 }

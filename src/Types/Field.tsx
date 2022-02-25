@@ -1,4 +1,4 @@
-import { FC } from "react";
+import {FC} from 'react'
 
 type FieldChildrenProps<Value> = {
   field: {
@@ -11,8 +11,8 @@ type FieldChildrenProps<Value> = {
     metaDependentError: any
   }
 }
-export type FieldProps<Value> = {
-  validate?: (value: Value | null, formValues: any) => any
+export type FieldProps<Value, FormData> = {
+  validate?: (value: Value | null, formValues: FormData) => any
   children: FC<FieldChildrenProps<Value>>
   name: string
 }

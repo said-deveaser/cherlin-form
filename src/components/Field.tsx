@@ -10,8 +10,8 @@ type MakeFieldParams<FormValues> = {
   registerValidateFunction: RegisterValidateFunction
 }
 const makeField =
-  <FormValues extends any>({changeFormField, formValues, registerChangeFunction, registerValidateFunction}: MakeFieldParams<FormValues>) =>
-  <Value extends any>(props: FieldProps<Value>): JSX.Element => {
+  <FormData extends any>({changeFormField, formValues, registerChangeFunction, registerValidateFunction}: MakeFieldParams<FormData>) =>
+  <Value extends any>(props: FieldProps<Value, FormData>): JSX.Element => {
     const {validate, children, name} = props
 
     const [_error, _setError] = useState<any>(undefined)
@@ -46,7 +46,7 @@ const makeField =
         unregisterChange()
         unregisterValidate()
       }
-    }, [])
+    })
 
     const Children = children
     const childComponent = useMemo(
@@ -68,17 +68,19 @@ const makeField =
 
     // return <div>{childComponent}</div>
     return (
-      <Children
-        meta={{
-          error: _error,
-          touched: _touched,
-          metaDependentError: (_touched && _error) || undefined,
-        }}
-        field={{
-          onValueChange: _changeValue,
-          value: _value,
-        }}
-      />
+      <React.Fragment>
+        <Children
+          meta={{
+            error: _error,
+            touched: _touched,
+            metaDependentError: (_touched && _error) || undefined,
+          }}
+          field={{
+            onValueChange: _changeValue,
+            value: _value,
+          }}
+        />
+      </React.Fragment>
     )
   }
 export default makeField
