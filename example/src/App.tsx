@@ -16,9 +16,6 @@ const App = () => {
     <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
       <h1>Тестирование формы</h1>
       <Field<string> name={'employee'} validate={(value, formValues) => {
-        if (value?.includes('000')) {
-          return "value cannot icnlude 000"
-        }
         return undefined
       }} >
         {({field, meta})=>(
@@ -29,13 +26,9 @@ const App = () => {
         )}
       </Field>
       <Field<string> name={'director'} validate={(value, formData) => {
-        if (value?.includes('000')) {
-          return "value cannot icnlude 000"
-        }
         return undefined
       }} >
         {({field, meta})=> {
-          console.log('rerender')
           return (
             <>
               <Input onTextChange={field.onValueChange} value={field.value} />

@@ -2,7 +2,7 @@ import {AnyObject, FormConstructorParams, OnSubmit, OnSubmitFailedFunction, Regi
 import {objectSet} from './Helpers'
 import {ReactNode} from 'react'
 import makeField from '../components/Field'
-import {FieldProps} from '../Types/Field'
+import {FieldChildrenMetaProp, FieldProps} from '../Types/Field'
 
 class Form<FormData extends any> {
   private _formValues: any = {}
@@ -25,37 +25,10 @@ class Form<FormData extends any> {
     }
     this.Field = makeField({
       formValues: this._formValues,
-      changeFormField: this._changeFormValue.bind(this),
+      onChangeFormField: this._onChangeFormValue.bind(this),
       registerChangeFunction: this._registerChangeFunction.bind(this),
       registerValidateFunction: this._registerValidateFunction.bind(this),
     })
-  }
-
-  // public getDataToMakeField = () => {
-  //   return {
-  //     formValues: this._formValues,
-  //     changeFormField: this._changeFormValue.bind(this),
-  //     registerChangeFunction: this._registerChangeFunction.bind(this),
-  //     registerValidateFunction: this._registerValidateFunction.bind(this),
-  //   }
-  // }
-
-  private _initializeForm = (initialValue: FormData) => {
-    this._formValues = initialValue
-  }
-
-  /*
-   * ф-я дает возможность изменить _formValues
-   * */
-  private _changeFormValue(fieldName: string, value: any) {
-    this._formValues = objectSet({
-      value: value,
-      obj: this._formValues,
-      path: fieldName,
-    })
-    if (this._debug) {
-      console.log('FormValues', this._formValues)
-    }
   }
 
   /*
@@ -80,6 +53,49 @@ class Form<FormData extends any> {
       this._onSubmit(this._formValues)
     } else if (this._onSubmitFailed) {
       this._onSubmitFailed(this._formValues, firstError)
+    }
+  }
+
+  public change(fieldName: string, value: any) {
+    const fieldChangeFuncs = this._registeredChangeFunction[fieldName]
+    if (fieldChangeFuncs) {
+      this._registeredChangeFunction[fieldName].forEach(changeFunc => {
+        changeFunc(value)
+      })
+    } else {
+      // rerender used show value by name
+      objectSet({
+        value: value,
+        obj: this._formValues,
+        path: fieldName,
+      })
+    }
+  }
+
+  // public getDataToMakeField = () => {
+  //   return {
+  //     formValues: this._formValues,
+  //     changeFormField: this._changeFormValue.bind(this),
+  //     registerChangeFunction: this._registerChangeFunction.bind(this),
+  //     registerValidateFunction: this._registerValidateFunction.bind(this),
+  //   }
+  // }
+
+  private _initializeForm = (initialValue: FormData) => {
+    this._formValues = initialValue
+  }
+
+  /*
+   * ф-я дает возможность изменить _formValues
+   * */
+  private _onChangeFormValue(fieldName: string, value: any) {
+    this._formValues = objectSet({
+      value: value,
+      obj: this._formValues,
+      path: fieldName,
+    })
+    if (this._debug) {
+      console.log('FormValues', this._formValues)
     }
   }
 

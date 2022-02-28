@@ -1,16 +1,16 @@
-import React, {FC, useEffect, useMemo, useState} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import {FieldProps} from '../Types/Field'
 import {RegisterChangeFunction, RegisterValidateFunction} from '../Types/Form'
 import {objectGet} from '../core/Helpers'
 
 type MakeFieldParams<FormValues> = {
-  changeFormField: (fieldName: string, value: any) => void
+  onChangeFormField: (fieldName: string, value: any) => void
   formValues: FormValues
   registerChangeFunction: RegisterChangeFunction
   registerValidateFunction: RegisterValidateFunction
 }
 const makeField =
-  <FormData extends any>({changeFormField, formValues, registerChangeFunction, registerValidateFunction}: MakeFieldParams<FormData>) =>
+  <FormData extends any>({onChangeFormField, formValues, registerChangeFunction, registerValidateFunction}: MakeFieldParams<FormData>) =>
   <Value extends any>(props: FieldProps<Value, FormData>): JSX.Element => {
     const {validate, children, name} = props
 
@@ -25,15 +25,17 @@ const makeField =
       }
       if (validate) {
         const error = validate(value, formValues)
-        if (error) {
+        if (error && !_error) {
           _setError(error)
+        } else if (!error && _error) {
+          _setError(undefined)
         }
         return error
       }
       return undefined
     }
     const _changeValue = (value: Value | null) => {
-      changeFormField(name, value)
+      onChangeFormField(name, value)
       _setValue(value)
       _validate(value)
     }
