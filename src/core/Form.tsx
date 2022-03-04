@@ -1,6 +1,6 @@
 import {AnyObject, FormConstructorParams, OnSubmit, OnSubmitFailedFunction, RegisterChangeFunction, RegisterValidateFunction} from '../Types/Form'
-import {objectSet} from './Helpers'
-import {ReactNode} from 'react'
+import {objectSet, pathParse} from './Helpers'
+import {ReactNode, useState} from 'react'
 import makeField from '../components/Field'
 import {FieldChildrenMetaProp, FieldProps} from '../Types/Field'
 
@@ -9,6 +9,7 @@ class Form<FormData extends any> {
   private _onSubmit: OnSubmit<FormData>
   private _debug: boolean = false
   private _onSubmitFailed: OnSubmitFailedFunction<FormData> | undefined = undefined
+  private _rerendersFuncs: {[K: string]: (() => void)[]} = {}
 
   public Field: <Value extends any>(props: FieldProps<Value, FormData>) => JSX.Element
 
@@ -69,6 +70,46 @@ class Form<FormData extends any> {
         obj: this._formValues,
         path: fieldName,
       })
+    }
+  }
+
+
+  // let useShowValueCount = 0
+  /* Дотсает значение из формы по имени */
+  public useShowValue = (fieldName: string, shouldRerender = false) => {
+    if (!Array.isArray(this._rerendersFuncs[fieldName])) {
+      this._rerendersFuncs[fieldName] = []
+    }
+  }
+
+  /* Обноваляет те филды которые зависят от параметра fieldName */
+  private _rerenderUsedShowValueByName = (fieldName: string) => {
+    const takeNameFromPathSplitElem = (pathSlitItem: string | {array: string; index: number}, isLast?: boolean) => {
+      if (typeof pathSlitItem === 'object') {
+        if (isLast) return pathSlitItem.array
+        else return pathSlitItem.array + `[${pathSlitItem.index}]`
+      } else {
+        return pathSlitItem
+      }
+    }
+    const pathSplit = pathParse({path: fieldName})
+    for (let i = pathSplit.length - 1; i >= 0; i--) {
+      let name = takeNameFromPathSplitElem(pathSplit[i], true)
+      let firstPathOfName = ''
+      for (let j = 0; j < i; j++) {
+        const pathSplitItem = pathSplit[j]
+        if (j === 0) {
+          firstPathOfName = takeNameFromPathSplitElem(pathSplitItem)
+        } else {
+          firstPathOfName += '.' + takeNameFromPathSplitElem(pathSplitItem)
+        }
+      }
+      if (firstPathOfName) {
+        name = firstPathOfName + '.' + name
+      }
+      if (rerender && rerender[name] && Array.isArray(rerender[name])) {
+        rerender[name].forEach((rerenderFunc: any) => typeof rerenderFunc === 'function' && rerenderFunc())
+      }
     }
   }
 

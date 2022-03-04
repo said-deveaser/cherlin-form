@@ -1,4 +1,4 @@
-import {ExampleComponent} from '.'
+// import {ExampleComponent} from '.'
 import {objectGet, objectSet} from './core/Helpers'
 
 describe('testing functions objectGet/objectSet', () => {

@@ -7,7 +7,7 @@ type FormData = {
 }
 
 const App = () => {
-  const {Field, submit} = useCreateForm<FormData>({
+  const {Field, submit, } = useCreateForm<FormData>({
     onSubmit: data => {
       console.log('data', data)
     },

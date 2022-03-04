@@ -204,7 +204,7 @@ type ObjectParseParams = {
   path: string
 }
 type PathSplitType = (string | { array: string; index: number })[]
-const pathParse = (params: ObjectParseParams): PathSplitType => {
+export const pathParse = (params: ObjectParseParams): PathSplitType => {
   const pathSplitByObj = params.path.split('.')
   const pathSplit: PathSplitType = pathSplitByObj.map((path) => {
     if (path.indexOf('][') !== -1) {
