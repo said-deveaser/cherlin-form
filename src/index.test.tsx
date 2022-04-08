@@ -1,5 +1,5 @@
 // import {ExampleComponent} from '.'
-import {objectGet, objectSet} from './core/Helpers'
+import {objectGet, objectSet} from './helpers/Helpers'
 
 describe('testing functions objectGet/objectSet', () => {
   test('objectSet set name[1].folder value 123', () => {

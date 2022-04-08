@@ -4,6 +4,12 @@
 
 [![NPM](https://img.shields.io/npm/v/cherlin-form.svg)](https://www.npmjs.com/package/cherlin-form) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
+## DEV
+```bash
+npm start # start library dev server
+cd example
+npm start # start example dev server to testing library
+```
 ## Install
 
 ```bash

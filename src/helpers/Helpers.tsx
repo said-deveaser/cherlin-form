@@ -198,7 +198,7 @@ export const objectGet = ({ obj, path }: ObjectGetParams) => {
 }
 
 /*
- * ф-я делит путь на объекты для нормально работы objectSet и objetctGet
+ * ф-я делит путь на объекты для нормальной работы objectSet и objetctGet
  * */
 type ObjectParseParams = {
   path: string
