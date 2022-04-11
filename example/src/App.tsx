@@ -41,6 +41,7 @@ const App = () => {
     onSubmitError: console.log,
   })
 
+
   useEffect(() => {
     // formHelpers.change('test', {
     //   name: '555'
@@ -64,7 +65,7 @@ const App = () => {
 
         return <ul>
           {
-            field.value?.map((test:any, index: number) => <li><Field name={`${field.fieldName}[${index}].name`} render={Test}/></li>)
+            field.value?.map((test:any, index: number) => <li><Field validate={({value}) => value.includes('555') ? 'ERR' : undefined} name={`${field.fieldName}[${index}].name`} render={Test}/></li>)
           }
           <li>
             <button onClick={() => formHelpers.change(field.fieldName, [
