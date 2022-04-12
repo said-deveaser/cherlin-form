@@ -25,13 +25,13 @@ const App = () => {
       }} render={({field}) => {
         return <input value={field.value} name={field.fieldName} onChange={e => field.setValue(e.target.value)}/>
       }}/>
-      <Field name={"employee.surname"} validate={(value) => {
+      <Field props={{v}} name={"employee.surname"} validate={(value) => {
         return undefined
       }} render={({field}) => {
-        return <input value={field.value} name={field.fieldName} onChange={e => {
+        return <div><input value={field.value} name={field.fieldName} onChange={e => {
           vv(e.target.value)
           field.setValue(e.target.value)
-        }}/>
+        }}/>{field.props?.v}</div>
       }}/>
       <WithFieldValue<{name: string}[]> fieldName={"users"} render={({field}) => {
         console.log('rerender')
