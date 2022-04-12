@@ -3,10 +3,10 @@
   "extends": [
     "standard",
     "standard-react",
-    "plugin:prettier/recommended",
-    "prettier/standard",
     "prettier/react",
-    "plugin:@typescript-eslint/eslint-recommended"
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:prettier/recommended",
+    "prettier/standard"
   ],
   "env": {
     "node": true
@@ -25,9 +25,12 @@
   },
   "plugins": ["@typescript-eslint"],
   "rules": {
+    "prettier/prettier": ["warn", {
+      "endOfLine": "crlf"
+    }],
     "max-len": ["warn", { "code": 300 }],
-    "prettier/prettier": 1,
     "space-before-function-paren": 0,
+    "linebreak-style": ["warn", "windows"],
     "react/prop-types": 0,
     "react/jsx-handler-names": 0,
     "react/jsx-fragments": 0,
